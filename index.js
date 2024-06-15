@@ -2,7 +2,11 @@ import { server as WebsocketServer } from 'websocket'
 import { createServer } from 'http'
 import chalk from 'chalk'
 import ChannelsService from './ChannelsService.js'
+import { config as loadEnv } from 'dotenv'
 
+loadEnv()
+
+const port = Number(process.env.PORT) || 4312
 const channelsService = new ChannelsService()
 
 const httpServer = createServer((req, res) => {
@@ -22,8 +26,8 @@ wsServer.on('connect', connection => {
   connection.on('close', (reasonCode, description) => onClose(connection, reasonCode, description))
 })
 
-httpServer.listen(8080, () => {
-  logInfo('Server is listening on port 8080')
+httpServer.listen(port, () => {
+  logInfo(`Server is listening on port ${port}`)
 })
 
 function onMessage(connection, message) {
