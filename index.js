@@ -17,6 +17,7 @@ const wsServer = new WebsocketServer({
 })
 
 wsServer.on('connect', connection => {
+  logInfo('Connection accepted')
   connection.on('message', message => onMessage(connection, message))
   connection.on('close', (reasonCode, description) => onClose(connection, reasonCode, description))
 })

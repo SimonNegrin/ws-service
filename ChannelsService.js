@@ -1,8 +1,8 @@
 
 export default class ChannelsService {
 
-  #channels = new Map();
-  #connections = new Map();
+  #channels = new Map()
+  #connections = new Map()
 
   subscribe(connection, channels) {
     channels.forEach(channel => {
@@ -21,6 +21,7 @@ export default class ChannelsService {
     channels.forEach(channel => {
       if (this.#channels.has(channel)) {
         this.#channels.get(channel).delete(connection)
+        this.#clearChannel(channel)
       }
       if (this.#connections.has(connection)) {
         this.#connections.get(connection).delete(channel)
@@ -34,6 +35,7 @@ export default class ChannelsService {
     }
     this.#connections.get(connection).forEach(channel => {
       this.#channels.get(channel).delete(connection)
+      this.#clearChannel(channel)
     })
     this.#connections.delete(connection)
   }
@@ -50,6 +52,12 @@ export default class ChannelsService {
         }
       })
     })
+  }
+
+  #clearChannel(channel) {
+    if (this.#channels.get(channel)?.size === 0) {
+      this.#channels.delete(channel)
+    }
   }
 
 }
