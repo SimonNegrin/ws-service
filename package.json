@@ -1,0 +1,19 @@
+{
+  "name": "ws-gamepad",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "websocket": "^1.0.35"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
+  }
+}
