@@ -39,13 +39,13 @@ function onMessage(connection, message) {
     const data = JSON.parse(message.utf8Data)
     switch (data.type) {
       case 'subscribe':
-        channelsService.subscribe(connection, data.channels)
+        channelsService.subscribe(connection, data.channel)
         break
       case 'unsubscribe':
-        channelsService.unsubscribe(connection, data.channels)
+        channelsService.unsubscribe(connection, data.channel)
         break
       case 'emit':
-        channelsService.emitFrom(connection, data.channels, data.payload)
+        channelsService.emitFrom(connection, data.channel, data.payload)
         break
     }
   } catch (error) {
