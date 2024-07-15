@@ -1,16 +1,22 @@
 import { server as WebsocketServer } from 'websocket'
 import { createServer } from 'http'
-import chalk from 'chalk'
 import ChannelsService from './ChannelsService.js'
 import { config as loadEnv } from 'dotenv'
+import log from './log.js'
 
 loadEnv()
 
-const port = Number(process.env.PORT) || 4312
+const port = Number(process.env.PORT) || 4321
 const channelsService = new ChannelsService()
 
+const commands = {
+  sub: (connection, data) => channelsService.subscribe(connection, data.channel),
+  unsub: (connection, data) => channelsService.unsubscribe(connection, data.channel),
+  emit: (connection, data) => channelsService.emitFrom(connection, data.channel, data.payload)
+}
+
 const httpServer = createServer((req, res) => {
-  logInfo('Received request:', req.url)
+  log.info('Received request:', req.url)
   res.writeHead(404)
   res.end()
 })
@@ -21,52 +27,32 @@ const wsServer = new WebsocketServer({
 })
 
 wsServer.on('connect', connection => {
-  logInfo('Connection accepted')
+  log.info('Connection accepted from:', connection.remoteAddress)
   connection.on('message', message => onMessage(connection, message))
   connection.on('close', (reasonCode, description) => onClose(connection, reasonCode, description))
 })
 
 httpServer.listen(port, () => {
-  logInfo(`Server is listening on port ${port}`)
+  log.info(`Server is listening on port ${port}`)
 })
 
 function onMessage(connection, message) {
   if (message.type !== 'utf8') {
     return
   }
-  logInfo('Received Message:', message.utf8Data)
   try {
     const data = JSON.parse(message.utf8Data)
-    switch (data.type) {
-      case 'sub':
-        channelsService.subscribe(connection, data.channel)
-        break
-      case 'unsub':
-        channelsService.unsubscribe(connection, data.channel)
-        break
-      case 'emit':
-        channelsService.emitFrom(connection, data.channel, data.payload)
-        break
+    if (!(data.type in commands)) {
+      log.error('Unknown command:', data.type)
+      return
     }
+    commands[data.type](connection, data)
   } catch (error) {
-    logError('Error:', error)
+    log.error('Error:', error)
   }
 }
 
 function onClose(connection, reasonCode, description) {
-  logInfo('Connection closed:', reasonCode, description)
+  log.info('Connection closed:', reasonCode, description)
   channelsService.unsubscribeAll(connection)
-}
-
-function logInfo(...messages) {
-  log(chalk.cyan(...messages))
-}
-
-function logError(...messages) {
-  log(chalk.red(...messages))
-}
-
-function log(...messages) {
-  const dateTime = new Date().toISOString()
-  console.log(chalk.gray(`[${dateTime}]`), ...messages)
 }
