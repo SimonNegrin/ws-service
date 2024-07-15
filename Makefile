@@ -1,12 +1,9 @@
 
-build:
-	docker build -t ws-service-image .
-
 start:
-	docker run -d --name ws-service -p 4321:4321 ws-service-image
+	docker compose up -d
 
 stop:
-	docker stop ws-service
+	docker compose stop
 
 clear:
-	docker rm ws-service
+	docker compose down -v
