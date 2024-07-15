@@ -38,10 +38,10 @@ function onMessage(connection, message) {
   try {
     const data = JSON.parse(message.utf8Data)
     switch (data.type) {
-      case 'subscribe':
+      case 'sub':
         channelsService.subscribe(connection, data.channel)
         break
-      case 'unsubscribe':
+      case 'unsub':
         channelsService.unsubscribe(connection, data.channel)
         break
       case 'emit':

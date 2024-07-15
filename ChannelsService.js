@@ -18,7 +18,7 @@ export default class ChannelsService {
   unsubscribe(connection, channel) {
     if (this.#channels.has(channel)) {
       this.#channels.get(channel).delete(connection)
-      this.#clearChannelIfEmpty(channel)
+      this.#removeEmptyChannel(channel)
     }
     if (this.#connections.has(connection)) {
       this.#connections.get(connection).delete(channel)
@@ -31,7 +31,7 @@ export default class ChannelsService {
     }
     this.#connections.get(connection).forEach(channel => {
       this.#channels.get(channel).delete(connection)
-      this.#clearChannelIfEmpty(channel)
+      this.#removeEmptyChannel(channel)
     })
     this.#connections.delete(connection)
   }
@@ -48,7 +48,7 @@ export default class ChannelsService {
     })
   }
 
-  #clearChannelIfEmpty(channel) {
+  #removeEmptyChannel(channel) {
     if (this.#channels.get(channel)?.size === 0) {
       this.#channels.delete(channel)
     }
