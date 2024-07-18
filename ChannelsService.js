@@ -37,7 +37,7 @@ export default class ChannelsService {
   }
 
   emitFrom(connection, channel, payload) {
-    const message = JSON.stringify({ type: 'emit', payload })
+    const message = JSON.stringify({ type: 'emit', channel, payload })
     if (!this.#channels.has(channel)) {
       return
     }
