@@ -1,0 +1,14 @@
+version: '3'
+
+vars:
+  REGISTRY: '192.168.1.4:5000'
+  IMAGE_NAME: 'ws-service'
+
+tasks:
+  push-tag-*:
+    vars:
+      TAG: '{{ index .MATCH 0 }}'
+    cmds:
+      - docker build -t {{ .IMAGE_NAME }}:{{ .TAG }} .
+      - docker tag {{ .IMAGE_NAME }}:{{ .TAG }} {{ .REGISTRY }}/{{ .IMAGE_NAME }}:{{ .TAG }}
+      - docker push {{ .REGISTRY }}/{{ .IMAGE_NAME }}:{{ .TAG }}

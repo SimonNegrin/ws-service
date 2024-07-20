@@ -33,7 +33,7 @@ wsServer.on('connect', connection => {
 })
 
 httpServer.listen(port, () => {
-  log.info(`Server is listening on port ${port}`)
+  log.info(`Server is listening at port ${port}`)
 })
 
 function onMessage(connection, message) {

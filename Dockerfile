@@ -2,12 +2,8 @@ FROM node:20
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY . .
 
-RUN npm install
-
-COPY . ./
-
-EXPOSE 4321
+RUN npm ci
 
 CMD ["npm", "start"]
